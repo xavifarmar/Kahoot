@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="StartButton">
+        <item name="android:background">@drawable/button_style</item>
+        <item name="backgroundTint">@color/gradient1</item><!-- Aplica el drawable -->
+        <item name="android:textColor">@android:color/white</item> <!-- Color del texto -->
+        <item name="android:textSize">18sp</item> <!-- Tamaño del texto -->
+        <item name="android:layout_marginTop">200dp</item> <!-- Margen superior -->
+    </style>
+    <style name="NewCodeButton">
+        <item name="android:background">@drawable/button_style</item> <!-- Aplica el drawable -->
+        <item name="android:textColor">@android:color/white</item>
+        <item name="backgroundTint">@color/red</item><!-- Color del texto -->
+        <item name="android:textSize">18sp</item> <!-- Tamaño del texto -->
+        <item name="android:layout_marginTop">200dp</item> <!-- Margen superior -->
+    </style>
+</resources>

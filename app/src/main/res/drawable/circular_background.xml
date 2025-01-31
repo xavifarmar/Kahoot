@@ -1,0 +1,4 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#FFEB3B" /> <!-- Fondo amarillo, puedes cambiar el color -->
+    <corners android:radius="30dp" /> <!-- Radio de la esquina para que sea circular -->
+</shape>

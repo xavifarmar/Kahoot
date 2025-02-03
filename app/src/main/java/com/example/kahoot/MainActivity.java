@@ -58,7 +58,8 @@ public class MainActivity extends AppCompatActivity {
         generateCodeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                generate_code();
+                 generate_code();
+
             }
         });
 
@@ -78,8 +79,6 @@ public class MainActivity extends AppCompatActivity {
         // Crear un nuevo objeto Game con el código generado y el estado "waiting"
         Game newGame = new Game(gameCode, "waiting");
 
-        Map<String, Object> playersMap = new HashMap<>();
-        playersMap.put("player0", "admin");
 
         // Verificar si ya existen códigos en la base de datos
         gameRef.orderByKey().limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -99,7 +98,9 @@ public class MainActivity extends AppCompatActivity {
                 // Agregar el nuevo código de juego a Firebase
                 gameRef.child("game_" + gameCode).setValue(newGame)
                         .addOnSuccessListener(aVoid -> {
-                            // Mensaje cuando se agrega correctamente el código
+                            gameRef.child("game_" + gameCode).child("currentQuestion").setValue(0);
+                            gameRef.child("game_" + gameCode).child("questionId").setValue("default");
+
                             System.out.println("Se ha enviado el código perfectamente");
                             listenForPlayers(gameCode);
                         })
@@ -152,14 +153,68 @@ public class MainActivity extends AppCompatActivity {
         // Actualizar el estado del juego en Firebase a "playing"
         gameRef.child("game_" + gameCode).child("status").setValue("playing")
                 .addOnSuccessListener(aVoid -> {
-                    // Si la actualización fue exitosa, inicia la nueva actividad
-                    Intent intent = new Intent(MainActivity.this, GameActivity.class);
-                    startActivity(intent);
+                    // Cargar preguntas desde Firebase antes de iniciar el juego
+                    loadQuestions(gameCode);
+
                 })
                 .addOnFailureListener(e -> {
                     // Si hubo un error al actualizar el estado, puedes manejarlo aquí
                     System.out.println("Error al actualizar el estado del juego: " + e.getMessage());
                 });
     }
+    private void loadQuestions(String gameCode) {
+        DatabaseReference questionsRef = FirebaseDatabase.getInstance().getReference("Questions").child("default");
+
+        questionsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // Verifica si existen datos
+                if (dataSnapshot.exists()) {
+                    ArrayList<Question> questionsList = new ArrayList<>();
+
+                    // Imprimir los datos recibidos para depuración
+                    System.out.println("Datos recibidos desde Firebase:");
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        Question question = snapshot.getValue(Question.class);
+                        System.out.println("Pregunta: " + snapshot.getValue());  // Agregar log aquí
+
+                        if (question != null) {
+                            // Agregar el `questionId` (en este caso, "default")
+                            question.setQuestionId("default");
+                            questionsList.add(question);
+                        }
+                    }
+
+                    if (!questionsList.isEmpty()) {
+                        // Si las preguntas están disponibles, continuar con la carga del juego
+                        Intent intent = new Intent(MainActivity.this, GameActivity.class);
+                        intent.putExtra("gameCode", Integer.parseInt(gameCode));  // Pasar el código del juego
+                        intent.putParcelableArrayListExtra("questionsList", questionsList);  // Pasar la lista de preguntas
+
+                        // También pasamos el questionId y currentQuestion
+                        intent.putExtra("questionId", "default");  // Aquí puedes poner un questionId dinámico si es necesario
+                        intent.putExtra("currentQuestion", 0);  // El índice de la pregunta inicial es 0 (primera pregunta)
+
+                        startActivity(intent);
+
+                        // Aquí actualizamos Firebase para que el índice de la pregunta sea 0 (comienza con la primera pregunta)
+                        gameRef.child("game_" + gameCode).child("currentQuestion").setValue(0);
+                        gameRef.child("game_" + gameCode).child("questionId").setValue("default");
+                    } else {
+                        System.out.println("No se encontraron preguntas.");
+                    }
+                } else {
+                    System.out.println("No hay datos en la ruta de preguntas.");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                System.out.println("Error al obtener preguntas: " + databaseError.getMessage());
+            }
+        });
+    }
+
+
 
 }

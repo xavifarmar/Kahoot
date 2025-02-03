@@ -9,6 +9,10 @@
     <color name="blue">#1A6CCE</color>
     <color name="yellow">#D7A00A</color>
     <color name="green">#2E8C15</color>
+    <color name="cyan">#0081CB</color>
+    <color name="magenta">#9B1B9B</color>
+    <color name="vivid_green">#56BA2F</color>
+    <color name="yellow_btn">#FFDD33  </color>
 
 
 </resources>

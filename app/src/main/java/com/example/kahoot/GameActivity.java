@@ -23,7 +23,8 @@ import java.util.Map;
 
 public class GameActivity extends AppCompatActivity {
     private TextView questionTextView, answer1TextView,
-            answer2TextView, answer3TextView, answer4TextView;
+            answer2TextView, answer3TextView, answer4TextView,
+            answersText;
     private TextView timerTextView;
     private FirebaseDatabase database;
     private DatabaseReference gameRef;
@@ -58,6 +59,7 @@ public class GameActivity extends AppCompatActivity {
         answer2TextView = findViewById(R.id.answer2);
         answer3TextView = findViewById(R.id.answer3);
         answer4TextView = findViewById(R.id.answer4);
+        answersText = findViewById(R.id.answersText);
 
         // Inicializar la base de datos de Firebase
         database = FirebaseDatabase.getInstance();
@@ -76,30 +78,37 @@ public class GameActivity extends AppCompatActivity {
         startCountdownTimer();
 
         // Escuchar las respuestas de los jugadores
-        listenForAnswers();
+        listenForAnswers(playersCount);
     }
 
-    private void listenForAnswers() {
-        gameRef.child("answers").addValueEventListener(new ValueEventListener() {
+    private void listenForAnswers(int playersCount) {
+        gameRef.child("playersAnswered").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    // Aquí puedes obtener todas las respuestas de los jugadores.
-                    // Asumiendo que cada jugador tiene su propia entrada bajo "answers" con su respuesta.
-                    for (DataSnapshot answerSnapshot : dataSnapshot.getChildren()) {
-                        String playerId = answerSnapshot.getKey();  // ID del jugador
-                        String playerAnswer = (String) answerSnapshot.getValue();  // Respuesta del jugador
+                    // Obtener el valor de playersAnswered (número de jugadores que han respondido)
+                    Integer playersAnsweredCount = dataSnapshot.getValue(Integer.class);
 
-                        Log.d("GameActivity", "Jugador: " + playerId + " respondió: " + playerAnswer);
+                    // Si el valor es null, inicializamos playersAnsweredCount en 0
+                    if (playersAnsweredCount == null) {
+                        playersAnsweredCount = 0;
                     }
 
-                    // Después de recibir todas las respuestas o cuando termina el tiempo,
-                    // puedes hacer que el juego pase a la siguiente pregunta.
-                    // Esto puede depender de tu lógica del juego (por ejemplo, verificar si todas las respuestas llegaron).
-                    // Después, actualizas el índice de la pregunta y pasas a la siguiente.
+                    Log.d("GameActivity", "Jugadores que han respondido: " + playersAnsweredCount);
+                    answersText.setText("Respuestas: " + playersAnsweredCount);
+                    // Comparar el número de respuestas con el número de jugadores
+                    if (playersAnsweredCount == playersCount) {
 
-                    // Si todas las respuestas llegaron o el tiempo se agotó:
-                    moveToNextQuestion();
+                        if(countDownTimer != null){
+                            countDownTimer.cancel();// Si todos los jugadores han respondido, pasamos a la siguiente pregunta
+                        }
+
+                        showCorrectAnswer();
+                    }
+                } else {
+                    // Si el nodo playersAnswered no existe aún, lo inicializamos en 0
+                    gameRef.child("playersAnswered").setValue(0);
+                    Log.d("GameActivity", "Inicializando playersAnswered en 0");
                 }
             }
 
@@ -110,8 +119,14 @@ public class GameActivity extends AppCompatActivity {
         });
     }
 
+
+
+
     private void moveToNextQuestion() {
         currentQuestionIndex++;  // Mover al siguiente índice de pregunta
+
+        // Reiniciar el contador de respuestas cuando se pasa a la siguiente pregunta
+        gameRef.child("playersAnswered").setValue(0); // Reinicia el contador de respuestas
 
         // Actualizamos el índice de la pregunta en Firebase
         gameRef.child("currentQuestion").setValue(currentQuestionIndex);
@@ -124,6 +139,7 @@ public class GameActivity extends AppCompatActivity {
             Log.d("GameActivity", "El juego ha terminado.");
         }
     }
+
 
 
     private void updateCurrentQuestionIndex() {

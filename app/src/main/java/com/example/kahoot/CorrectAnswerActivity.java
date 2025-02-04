@@ -62,7 +62,7 @@ public class CorrectAnswerActivity extends AppCompatActivity {
     }
 
     private void startCountdownTimer() {
-        countDownTimer = new CountDownTimer(5000, 1000) {  // 5 segundos, cuenta atrás cada 1 segundo
+        countDownTimer = new CountDownTimer(10000, 1000) {  // 5 segundos, cuenta atrás cada 1 segundo
             @Override
             public void onTick(long millisUntilFinished) {
                 timeLeft = (int) (millisUntilFinished / 1000);

@@ -7,14 +7,17 @@
 
     <TextView
         android:id="@+id/questionTextView"
-        android:layout_width="354dp"
+        android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_marginTop="104dp"
-        android:layout_marginEnd="28dp"
-        android:text="Pregunta"
-        android:textSize="22dp"
+        android:layout_marginTop="132dp"
         android:gravity="center_vertical"
+        android:paddingHorizontal="15dp"
+        android:text="Pregunta"
+        android:textSize="25sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TableLayout
@@ -106,12 +109,11 @@
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="409dp"
+        android:layout_width="match_parent"
         android:layout_height="63dp"
         android:background="@color/gradient1"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -119,18 +121,30 @@
 
     <TextView
         android:id="@+id/timerTextView"
-        android:padding="10dp"
         android:layout_width="100dp"
         android:layout_height="101dp"
-        android:layout_marginTop="260dp"
+        android:layout_marginTop="312dp"
         android:background="@drawable/timer_background"
         android:gravity="center"
+        android:padding="10dp"
         android:text="30"
         android:textColor="@color/white"
         android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="244dp"
+        android:layout_height="33dp"
+        android:layout_marginTop="456dp"
+        android:text="Respuestas: "
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.095"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

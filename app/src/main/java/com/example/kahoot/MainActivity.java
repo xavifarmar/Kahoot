@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference gameRef;
     private List<Player> playersList;
     private PlayerAdapter playerAdapter;
-
+    private int playersCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,10 +127,22 @@ public class MainActivity extends AppCompatActivity {
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Player player = snapshot.getValue(Player.class);
-                    if (playersList != null) {
-                        playersList.add(player);
+                    if (player != null) {
+                        playersList.add(player);  // Agregar el jugador a la lista
                     }
                 }
+
+                playersCount = playersList.size();  // Actualizar el contador de jugadores
+
+                // Actualizar la base de datos con el nuevo contador de jugadores
+                gameRef.getParent().child("playersCount").setValue(playersCount)
+                        .addOnSuccessListener(aVoid -> {
+                            System.out.println("Contador de jugadores actualizado correctamente.");
+                        })
+                        .addOnFailureListener(e -> {
+                            System.out.println("Error al actualizar el contador de jugadores: " + e.getMessage());
+                        });
+
                 // Si hay jugadores, habilitar el botón de Start
                 if (!playersList.isEmpty()) {
                     startButton.setVisibility(View.VISIBLE);
@@ -145,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
 
     private void startGame() {
         // Obtener el código del juego (puedes obtener el código desde la UI, o guardarlo previamente en algún lugar)
@@ -194,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
                         // También pasamos el questionId y currentQuestion
                         intent.putExtra("questionId", "default");  // Aquí puedes poner un questionId dinámico si es necesario
                         intent.putExtra("currentQuestion", 0);  // El índice de la pregunta inicial es 0 (primera pregunta)
-
+                        intent.putExtra("playersCount", playersCount);
                         startActivity(intent);
 
                         // Aquí actualizamos Firebase para que el índice de la pregunta sea 0 (comienza con la primera pregunta)

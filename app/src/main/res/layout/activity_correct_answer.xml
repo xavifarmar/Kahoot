@@ -7,24 +7,25 @@
 
     <TextView
         android:id="@+id/questionTextView"
-        android:layout_width="354dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="104dp"
-        android:layout_marginEnd="28dp"
-        android:text="La respuesta correcta es:"
-        android:textSize="22dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="108dp"
         android:gravity="center_vertical"
+        android:text="La respuesta correcta es:"
+        android:textSize="24dp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.208"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="409dp"
+        android:layout_width="match_parent"
         android:layout_height="63dp"
         android:background="@color/gradient1"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 

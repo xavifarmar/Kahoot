@@ -28,9 +28,10 @@ public class GameActivity extends AppCompatActivity {
     private FirebaseDatabase database;
     private DatabaseReference gameRef;
     private int gameCode; // Código del juego
-    private CountDownTimer countDownTimer; // Agregamos un campo para manejar el temporizador
+    private CountDownTimer countDownTimer;
+    private int playersCount;
 
-    private ArrayList<Question> questionsList;  // Cambiado a ArrayList<Question>
+    private ArrayList<Question> questionsList;
     private int currentQuestionIndex = 0;
 
     @Override
@@ -43,7 +44,7 @@ public class GameActivity extends AppCompatActivity {
         Intent intent = getIntent();
         gameCode = intent.getIntExtra("gameCode", -1); // Valor predeterminado -1 en caso de que no se pase
         questionsList = intent.getParcelableArrayListExtra("questionsList"); // Recuperando la lista de preguntas
-
+        playersCount = intent.getIntExtra("playersCount", 0);
         // Verificar que el gameCode no es -1
         if (gameCode == -1) {
             Log.e("GameActivity", "No se pudo obtener el gameCode");
@@ -227,7 +228,9 @@ public class GameActivity extends AppCompatActivity {
         // Crear un Intent para la actividad de la respuesta correcta y pasar la respuesta y el color
         Intent intent = new Intent(GameActivity.this, CorrectAnswerActivity.class);
         intent.putExtra("correctAnswer", correctAnswer);
-        intent.putExtra("correctAnswerColor", correctAnswerColor);  // Pasamos el color de fondo
+        intent.putExtra("correctAnswerColor", correctAnswerColor);
+        intent.putExtra("gameCode", gameCode);
+        Log.d("Game activity", "GAME CODE: " + gameCode);
         startActivity(intent);
 
         // Pasar a la siguiente pregunta después de 5 segundos
@@ -245,6 +248,5 @@ public class GameActivity extends AppCompatActivity {
         // Cuando el temporizador termine, mostrar la respuesta correcta
         showCorrectAnswer();
     }
-
 
 }
